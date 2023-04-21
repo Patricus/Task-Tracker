@@ -19,7 +19,6 @@ export const UserContextProvider = ({ children }) => {
     });
     if (res.status === 200) {
       const { user } = await res.json();
-      console.log("user", user);
       setUser(user);
     } else {
       const { error } = await res.json();

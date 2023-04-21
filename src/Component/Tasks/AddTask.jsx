@@ -1,20 +1,49 @@
 import React, { useState } from "react";
+import useTasks from "../Context/Tasks";
 
-export default function AddTask({ task, taskList, setTaskList }) {
+export default function AddTask() {
   const [addModal, setAddModal] = useState(false);
-  const [projectName, setProjectName] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
-  const handleInput = (e) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("Planning");
+  const [dueDate, setDueDate] = useState(new Date().toISOString().split("T")[0]);
+
+  const { addTask } = useTasks();
+
+  const handleInput = e => {
     const { name, value } = e.target;
-    if (name === "projectName") setProjectName(value);
-    if (name === "taskDescription") setTaskDescription(value);
+    switch (name) {
+      case "title":
+        setTitle(value);
+        break;
+      case "description":
+        setDescription(value);
+        break;
+      case "status":
+        setStatus(value);
+        break;
+      case "dueDate":
+        setDueDate(new Date(value).toISOString().split("T")[0]);
+        break;
+      default:
+        break;
+    }
   };
-  const handleAdd = (e) => {
+  const handleAdd = async e => {
     e.preventDefault();
-    setTaskList([...taskList, { projectName, taskDescription }]);
-    setAddModal(false);
-    setProjectName("");
-    setTaskDescription("");
+    const newTask = await addTask({
+      title,
+      description,
+      status,
+      dueDate,
+    });
+    if (newTask) {
+      setAddModal(false);
+      setTitle("");
+      setDescription("");
+      setStatus("Planning");
+      setDueDate(new Date().toISOString().split("T")[0]);
+    }
   };
 
   return (
@@ -22,8 +51,7 @@ export default function AddTask({ task, taskList, setTaskList }) {
       <button
         className="bg-blue-500 text-white rounded-lg px-2 py-0.5 uppercase text-sm font-semibold mx-1.5 pl-2 pr-2.5 hover:opacity-70"
         type="button"
-        onClick={() => setAddModal(true)}
-      >
+        onClick={() => setAddModal(true)}>
         + New
       </button>
       {addModal ? (
@@ -34,8 +62,7 @@ export default function AddTask({ task, taskList, setTaskList }) {
                 <h3 className="text-3xl">Add New Task</h3>
                 <button
                   className="px-1 text-gray-400 float-right text-3xl leading-none font-semibold block"
-                  onClick={() => setAddModal(false)}
-                >
+                  onClick={() => setAddModal(false)}>
                   x
                 </button>
               </div>
@@ -43,9 +70,8 @@ export default function AddTask({ task, taskList, setTaskList }) {
                 <div className="">
                   <label
                     className="track-wide uppercase text-gray-700 text-xs font-semibold mb-2 block"
-                    htmlFor="project-name"
-                  >
-                    Project name
+                    htmlFor="title">
+                    Title
                   </label>
                   <input
                     className="w-full bg-gray-200 text-gray-700
@@ -58,20 +84,19 @@ export default function AddTask({ task, taskList, setTaskList }) {
                   leading-tight
                   focus:outline-none
                   focus:bg-white"
-                    name="projectName"
-                    value={projectName}
+                    name="title"
+                    value={title}
                     onChange={handleInput}
                     type="text"
-                    placeholder="Project name"
+                    placeholder="Title"
                     required
                   />
                 </div>
                 <div>
                   <label
                     className="track-wide uppercase text-gray-700 text-xs font-semibold mb-2 block"
-                    htmlFor="project-name"
-                  >
-                    Task description
+                    htmlFor="description">
+                    Description
                   </label>
                   <textarea
                     className="w-full bg-gray-200 text-gray-700
@@ -87,20 +112,67 @@ export default function AddTask({ task, taskList, setTaskList }) {
                     id="task-description"
                     rows="5"
                     placeholder="Task description"
-                    name="taskDescription"
-                    value={taskDescription}
+                    name="description"
+                    value={description}
+                    onChange={handleInput}></textarea>
+                </div>
+                <div>
+                  <label
+                    className="track-wide uppercase text-gray-700 text-xs font-semibold mb-2 block"
+                    htmlFor="status">
+                    Status
+                  </label>
+                  <select
+                    className="w-full bg-gray-200 text-gray-700
+                  border
+                  border-gray-200
+                  rounded
+                  py-3
+                  px-4
+                  mb-5
+                  leading-tight
+                  focus:outline-none
+                  focus:bg-white"
+                    type="number"
+                    name="status"
+                    value={status}
+                    onChange={handleInput}>
+                    <option value="Planning">Planning</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Complete">Complete</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    className="track-wide uppercase text-gray-700 text-xs font-semibold mb-2 block"
+                    htmlFor="dueDate">
+                    Date
+                  </label>
+                  <input
+                    className="w-full bg-gray-200 text-gray-700
+                  border
+                  border-gray-200
+                  rounded
+                  py-3
+                  px-4
+                  mb-5
+                  leading-tight
+                  focus:outline-none
+                  focus:bg-white"
+                    type="date"
+                    name="dueDate"
+                    value={dueDate}
                     onChange={handleInput}
-                  ></textarea>
+                  />
                 </div>
               </form>
               <div className="flex justify-end p-6 border-t border-slate-200 rounded-b ">
                 <button
-                  className="bg-blue-500 
-                text-white font-semibold 
-                uppercase text-sm px-6 py-3 
+                  className="bg-blue-500
+                text-white font-semibold
+                uppercase text-sm px-6 py-3
                 rounded hover:opacity-70"
-                  onClick={handleAdd}
-                >
+                  onClick={handleAdd}>
                   Add Task
                 </button>
               </div>

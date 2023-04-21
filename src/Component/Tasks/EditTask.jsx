@@ -1,29 +1,56 @@
 import React, { useState } from "react";
+import useTasks from "../Context/Tasks";
+import useUser from "../Context/User";
 
-export default function EditTask({ task, index, taskList, setTaskList }) {
+export default function EditTask({ task }) {
   const [editModal, setEditModal] = useState(false);
-  const [projectName, setProjectName] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
-  const handleInput = (e) => {
-    const { name, value } = e.target;
-    if (name === "projectName") setProjectName(value);
-    if (name === "taskDescription") setTaskDescription(value);
-  };
-  const handleAdd = (e) => {
-    e.preventDefault();
-    setTaskList([...taskList, { projectName, taskDescription }]);
-    setEditModal(false);
-    setProjectName("");
-    setTaskDescription("");
-  };
+  const [title, setTitle] = useState(task.title);
+  const [description, setDescription] = useState(task.description);
+  const [status, setStatus] = useState(task.status);
+  const [dueDate, setDueDate] = useState(
+    task.due_date ? task.due_date.split("T")[0] : task.dueDate
+  );
 
+  const { editTask } = useTasks();
+
+  const handleInput = e => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "title":
+        setTitle(value);
+        break;
+      case "description":
+        setDescription(value);
+        break;
+      case "status":
+        setStatus(value);
+        break;
+      case "dueDate":
+        console.log("dueDate-value", value);
+        setDueDate(value);
+        break;
+      default:
+        break;
+    }
+  };
+  const handleEdit = e => {
+    e.preventDefault();
+    editTask({
+      id: task.id,
+      title,
+      description,
+      status,
+      dueDate,
+    });
+
+    setEditModal(false);
+  };
   return (
     <div>
       <button
         className="bg-gray-400 text-white text-sm-uppercase font-semibold py-1.5 px-3 rounded-lg"
         type="button"
-        onClick={() => setEditModal(true)}
-      >
+        onClick={() => setEditModal(true)}>
         Edit
       </button>
       {editModal ? (
@@ -34,8 +61,7 @@ export default function EditTask({ task, index, taskList, setTaskList }) {
                 <h3 className="text-3xl">Edit Task</h3>
                 <button
                   className="px-1 text-gray-400 float-right text-3xl leading-none font-semibold block"
-                  onClick={() => setEditModal(false)}
-                >
+                  onClick={() => setEditModal(false)}>
                   x
                 </button>
               </div>
@@ -43,9 +69,8 @@ export default function EditTask({ task, index, taskList, setTaskList }) {
                 <div className="">
                   <label
                     className="track-wide uppercase text-gray-700 text-xs font-semibold mb-2 block"
-                    htmlFor="project-name"
-                  >
-                    Project name
+                    htmlFor="title">
+                    Title
                   </label>
                   <input
                     className="w-full bg-gray-200 text-gray-700
@@ -58,20 +83,19 @@ export default function EditTask({ task, index, taskList, setTaskList }) {
                   leading-tight
                   focus:outline-none
                   focus:bg-white"
-                    name="projectName"
-                    value={projectName}
+                    name="title"
+                    value={title}
                     onChange={handleInput}
                     type="text"
-                    placeholder="Project name"
+                    placeholder="Title"
                     required
                   />
                 </div>
                 <div>
                   <label
                     className="track-wide uppercase text-gray-700 text-xs font-semibold mb-2 block"
-                    htmlFor="project-name"
-                  >
-                    Task description
+                    htmlFor="description">
+                    Description
                   </label>
                   <textarea
                     className="w-full bg-gray-200 text-gray-700
@@ -87,21 +111,68 @@ export default function EditTask({ task, index, taskList, setTaskList }) {
                     id="task-description"
                     rows="5"
                     placeholder="Task description"
-                    name="taskDescription"
-                    value={taskDescription}
+                    name="description"
+                    value={description}
+                    onChange={handleInput}></textarea>
+                </div>
+                <div>
+                  <label
+                    className="track-wide uppercase text-gray-700 text-xs font-semibold mb-2 block"
+                    htmlFor="status">
+                    Status
+                  </label>
+                  <select
+                    className="w-full bg-gray-200 text-gray-700
+                  border
+                  border-gray-200
+                  rounded
+                  py-3
+                  px-4
+                  mb-5
+                  leading-tight
+                  focus:outline-none
+                  focus:bg-white"
+                    type="number"
+                    name="status"
+                    value={status}
+                    onChange={handleInput}>
+                    <option value="Planning">Planning</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Complete">Complete</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    className="track-wide uppercase text-gray-700 text-xs font-semibold mb-2 block"
+                    htmlFor="dueDate">
+                    Date
+                  </label>
+                  <input
+                    className="w-full bg-gray-200 text-gray-700
+                  border
+                  border-gray-200
+                  rounded
+                  py-3
+                  px-4
+                  mb-5
+                  leading-tight
+                  focus:outline-none
+                  focus:bg-white"
+                    type="date"
+                    name="dueDate"
+                    value={dueDate}
                     onChange={handleInput}
-                  ></textarea>
+                  />
                 </div>
               </form>
               <div className="flex justify-end p-6 border-t border-slate-200 rounded-b ">
                 <button
-                  className="bg-blue-500 
-                text-white font-semibold 
-                uppercase text-sm px-6 py-3 
+                  className="bg-blue-500
+                text-white font-semibold
+                uppercase text-sm px-6 py-3
                 rounded hover:opacity-70"
-                  onClick={handleAdd}
-                >
-                  Update Task
+                  onClick={handleEdit}>
+                  Edit Task
                 </button>
               </div>
             </div>
