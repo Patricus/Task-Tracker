@@ -18,6 +18,10 @@ export const TasksContextProvider = ({ children }) => {
 
   const { user } = useUser();
 
+  useEffect(() => {
+    if (!user.id) setTasks([]);
+  }, [user]);
+
   const sortTasks = sortOption => {
     const curSort = sortOption || sort;
     if (sortOption) setSort(sortOption);
