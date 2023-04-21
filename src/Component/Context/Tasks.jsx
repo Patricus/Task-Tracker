@@ -1,10 +1,11 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import useUser from "./User";
 
 const TaskType = ["Planning", "In Progress", "Completed"];
 
 const TasksContext = createContext({
   tasks: [],
+  sortTasks: () => {},
   fetchTasks: () => {},
   addTask: task => {},
   removeTask: task => {},
@@ -13,8 +14,33 @@ const TasksContext = createContext({
 
 export const TasksContextProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
+  const [sort, setSort] = useState("status");
 
   const { user } = useUser();
+
+  const sortTasks = sortOption => {
+    const curSort = sortOption || sort;
+    if (sortOption) setSort(sortOption);
+
+    switch (curSort) {
+      case "status":
+        const statusValues = {
+          Planning: 1,
+          "In Progress": 0,
+          Complete: 2,
+        };
+        setTasks(tasks.sort((a, b) => statusValues[a.status] - statusValues[b.status]));
+        break;
+      case "date":
+        setTasks(tasks.sort((a, b) => new Date(a.due_date) - new Date(b.due_date)));
+        break;
+      case "title":
+        setTasks(tasks.sort((a, b) => a.title.localeCompare(b.title)));
+        break;
+      default:
+        return tasks;
+    }
+  };
 
   const fetchTasks = () => {
     fetch(`api/tasks/${user.id}`)
@@ -68,7 +94,6 @@ export const TasksContextProvider = ({ children }) => {
   };
 
   const editTask = updatedTask => {
-    console.log("updatedTask", updatedTask);
     fetch(`api/tasks/`, {
       method: "PUT",
       headers: {
@@ -102,7 +127,7 @@ export const TasksContextProvider = ({ children }) => {
   };
 
   return (
-    <TasksContext.Provider value={{ tasks, fetchTasks, addTask, removeTask, editTask }}>
+    <TasksContext.Provider value={{ tasks, sortTasks, fetchTasks, addTask, removeTask, editTask }}>
       {children}
     </TasksContext.Provider>
   );
