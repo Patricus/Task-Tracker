@@ -6,8 +6,13 @@ import useTasks from "../Context/Tasks";
 import useUser from "../Context/User";
 
 export default function index() {
+  const [sort, setSort] = useState("status");
   const { user, logOut } = useUser();
-  const { tasks, fetchTasks } = useTasks();
+  const { tasks, fetchTasks, sortTasks } = useTasks();
+
+  useEffect(() => {
+    sortTasks(sort);
+  }, [sort]);
 
   useEffect(() => {
     fetchTasks();
@@ -25,6 +30,14 @@ export default function index() {
         <p className="text-xl pl-6"> Click</p>
         <AddTask />
         <p className="text-xl my-2">to add a new task</p>
+      </div>
+      <div>
+        <label htmlFor="sort">Sort By</label>
+        <select name="sort" id="sort" value={sort} onChange={e => setSort(e.target.value)}>
+          <option value="status">Status</option>
+          <option value="date">Due Date</option>
+          <option value="title">Title</option>
+        </select>
       </div>
       <div>
         <h2 className="ml-6 text-xl bg-gray-300 font-semibold w-3/4 max-w-lg py-2 px-4 my-4">

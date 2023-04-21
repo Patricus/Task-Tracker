@@ -26,7 +26,6 @@ export default function EditTask({ task }) {
         setStatus(value);
         break;
       case "dueDate":
-        console.log("dueDate-value", value);
         setDueDate(value);
         break;
       default:

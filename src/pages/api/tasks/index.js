@@ -40,7 +40,6 @@ export default async function handler(req, res) {
 
   // UPDATE
   else if (req.method === "PUT") {
-    console.log("task", task);
     try {
       const result = await db.query(
         `UPDATE ${process.env.DATABASE_SCHEMA || "public"}.tasks

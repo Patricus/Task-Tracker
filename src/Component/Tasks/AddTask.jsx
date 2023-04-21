@@ -8,7 +8,7 @@ export default function AddTask() {
   const [status, setStatus] = useState("Planning");
   const [dueDate, setDueDate] = useState(new Date().toISOString().split("T")[0]);
 
-  const { addTask } = useTasks();
+  const { addTask, sortTasks } = useTasks();
 
   const handleInput = e => {
     const { name, value } = e.target;
