@@ -29,7 +29,6 @@ export const TasksContextProvider = ({ children }) => {
           "In Progress": 0,
           Complete: 2,
         };
-        setTasks([]);
         setTasks(tasks.sort((a, b) => statusValues[a.status] - statusValues[b.status]));
         break;
       case "date":
