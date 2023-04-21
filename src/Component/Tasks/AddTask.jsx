@@ -52,7 +52,7 @@ export default function AddTask() {
         className="bg-blue-500 text-white rounded-lg px-2 py-0.5 uppercase text-sm font-semibold mx-1.5 pl-2 pr-2.5 hover:opacity-70"
         type="button"
         onClick={() => setAddModal(true)}>
-        + New
+        + New Task
       </button>
       {addModal ? (
         <>

@@ -20,28 +20,34 @@ export default function index() {
 
   return (
     <div>
-      <div className="flex space-x-10">
-        <button onClick={logOut}>Log Out</button>
-        <h2>{user.name}</h2>
+      <div className="flex justify-between m-2">
+        <button
+          className="bg-red-500 text-white text-sm uppercase font-semibold py-1.5 px-3 rounded-lg"
+          onClick={logOut}>
+          Log Out
+        </button>
+        <p className="text-2xl pl-6">{`Hello, ${user.name}`}</p>
       </div>
-      <h1 className="text-2xl font-bold py-6 pl-6">03 - The task Tracker</h1>
-      <p className="text-xl pl-6">Hi there!</p>
-      <div className="flex flex-row items-center">
-        <p className="text-xl pl-6"> Click</p>
+      <h1 className="text-4xl font-bold w-screen text-center">Task Tracker</h1>
+      <div className="flex justify-around">
         <AddTask />
-        <p className="text-xl my-2">to add a new task</p>
+        <div>
+          <label htmlFor="sort">Sort By </label>
+          <select
+            className="border border-gray-300 rounded-lg w-fit"
+            name="sort"
+            id="sort"
+            value={sort}
+            onChange={e => setSort(e.target.value)}>
+            <option value="status">Status</option>
+            <option value="date">Due Date</option>
+            <option value="title">Title</option>
+          </select>
+        </div>
       </div>
       <div>
-        <label htmlFor="sort">Sort By</label>
-        <select name="sort" id="sort" value={sort} onChange={e => setSort(e.target.value)}>
-          <option value="status">Status</option>
-          <option value="date">Due Date</option>
-          <option value="title">Title</option>
-        </select>
-      </div>
-      <div>
-        <h2 className="ml-6 text-xl bg-gray-300 font-semibold w-3/4 max-w-lg py-2 px-4 my-4">
-          To Do:
+        <h2 className="mx-6 text-xl bg-gray-300 font-semibold py-2 px-4 my-4 text-center">
+          Tasks:
         </h2>
         {tasks.map((task, i) => (
           <ToDo key={i} {...task} />

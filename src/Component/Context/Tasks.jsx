@@ -63,7 +63,7 @@ export const TasksContextProvider = ({ children }) => {
       .then(res => res.json())
       .then(data => {
         if (!data.error) {
-          setTasks(tasks => tasks.concat(data.task));
+          setTasks(tasks => [data.task, ...tasks]);
           return data.task;
         } else {
           throw new Error(data.error);
