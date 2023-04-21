@@ -68,7 +68,6 @@ export const TasksContextProvider = ({ children }) => {
   };
 
   const editTask = updatedTask => {
-    console.log("updatedTask", updatedTask);
     fetch(`api/tasks/`, {
       method: "PUT",
       headers: {
